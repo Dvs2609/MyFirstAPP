@@ -1,5 +1,6 @@
 package com.example.myapplicatiom;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private TextView showCountTextView;
 
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -26,12 +28,16 @@ public class FirstFragment extends Fragment {
     ) {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
 
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        showCountTextView = view.findViewById(R.id.textview_first);
+
 
         binding.randomButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,19 +46,29 @@ public class FirstFragment extends Fragment {
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
+
         view.findViewById(R.id.random_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
+
+                Bundle bundle = new Bundle();
+                String countR = showCountTextView.getText().toString();
+
+                bundle.putString("count", countR);
+
+                getParentFragmentManager().setFragmentResult("dataF1", bundle);
+                showCountTextView.setText("");
+
+                //SecondFragment secondFragment = new SecondFragment();
+                //secondFragment.setArguments(bundle);
+                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container,secondFragment).commit();
             }
         });
-        view.findViewById(R.id.toast_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast myToast = Toast.makeText(getActivity(), "Hello Toast!", Toast.LENGTH_SHORT);
-                myToast.show();
-            }
+        view.findViewById(R.id.toast_button).setOnClickListener(view1 -> {
+            Toast myToast = Toast.makeText(getActivity(), "Hello Toast!", Toast.LENGTH_SHORT);
+            myToast.show();
         });
 
         view.findViewById(R.id.count_button).setOnClickListener(new View.OnClickListener() {
@@ -64,6 +80,7 @@ public class FirstFragment extends Fragment {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void countMe(View view) {
         // Get the value of the text view
         showCountTextView = view.findViewById(R.id.textview_first);
