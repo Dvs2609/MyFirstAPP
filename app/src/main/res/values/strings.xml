@@ -13,5 +13,6 @@
     <string name="second_fragment_num">0</string>
     <string name="imageLayout">Image</string>
     <string name="recyclerview">WebView</string>
+    <string name="ButtonBranchActivity">WebView</string>
 
 </resources>

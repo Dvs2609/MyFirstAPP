@@ -1,25 +1,19 @@
 package com.example.myapplicatiom;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+
 
 public class MainActivity2 extends AppCompatActivity {
 
-    //private ItemData[] itemsData;
-    //private ItemData item;
+    private WebView webview;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -27,6 +21,11 @@ public class MainActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        getSupportActionBar().hide();
+
+        webview = (WebView) findViewById(R.id.WVid);
+        webview.setWebViewClient(new WebViewClient());
+        webview.loadUrl("http://www.google.com");
     }
 
 }
