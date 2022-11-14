@@ -1,10 +1,12 @@
 package com.example.myapplicatiom;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +80,21 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        // Botón para abrir Activity2
+
+        view.findViewById(R.id.button_fragment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openActivity2();
+            }
+        });
+        // FIN Botón abrir Activity2
+
+    }
+
+    void openActivity2(){
+        Intent intent = new Intent(getContext(), MainActivity2.class);
+        startActivity(intent);
     }
 
     @SuppressLint("SetTextI18n")

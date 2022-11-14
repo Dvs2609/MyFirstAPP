@@ -49,21 +49,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Botón para abrir Activity2
-        button_fragment = (Button) findViewById(R.id.button_fragment);
-        button_fragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openActivity2();
-            }
-        });
-        // FIN Botón abrir Activity2
 
     }
-     void openActivity2(){
-        Intent intent = new Intent(this, MainActivity2.class);
-        startActivity(intent);
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
