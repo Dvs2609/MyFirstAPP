@@ -86,6 +86,8 @@ public class FirstFragment extends Fragment {
         view.findViewById(R.id.button_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DbHelper dbHelper = new DbHelper(getContext());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
                 openActivity2();
             }
         });

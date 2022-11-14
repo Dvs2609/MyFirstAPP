@@ -23,9 +23,9 @@ public class MainActivity2 extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        webview = (WebView) findViewById(R.id.WVid);
-        webview.setWebViewClient(new WebViewClient());
-        webview.loadUrl("http://www.google.com");
+        //webview = (WebView) findViewById(R.id.WVid);
+        //webview.setWebViewClient(new WebViewClient());
+        //webview.loadUrl("http://www.google.com");
     }
 
 }
