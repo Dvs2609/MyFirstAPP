@@ -1,6 +1,7 @@
 package com.example.myapplicatiom;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.myapplicatiom.databinding.FragmentFirstBinding;
 import com.example.myapplicatiom.db.DbHelper;
+import com.example.myapplicatiom.db.database;
 
 public class FirstFragment extends Fragment {
 
@@ -86,8 +88,7 @@ public class FirstFragment extends Fragment {
         view.findViewById(R.id.button_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DbHelper dbHelper = new DbHelper(getContext());
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
+
                 openActivity2();
             }
         });

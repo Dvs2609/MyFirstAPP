@@ -10,6 +10,7 @@ public final class database {
     /* Inner class that defines the table contents */
     public static class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME = "entry";
+        public static final String _ID = "id";
         public static final String COLUMN_NAME_DNI = "dni";
         public static final String COLUMN_NAME_NOMBRE = "nombre";
         public static final String COLUMN_NAME_APELLIDO = "apellido";
