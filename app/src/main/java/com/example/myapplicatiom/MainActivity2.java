@@ -1,9 +1,12 @@
 package com.example.myapplicatiom;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,7 +23,7 @@ import com.example.myapplicatiom.rv.DataList;
 public class MainActivity2 extends AppCompatActivity {
 
     EditText dni, name,surname,edad , direc;
-    Button insert, show, delete;
+    Button insert, show, deleteall, deletebydni;
     DbHelper sqLiteDatabase;
 
     @SuppressLint("MissingInflatedId")
@@ -38,7 +41,8 @@ public class MainActivity2 extends AppCompatActivity {
         direc = findViewById(R.id.newdirec);
         insert = findViewById(R.id.buttonNew);
         show = findViewById(R.id.buttonShow);
-        delete = findViewById(R.id.buttonDelete);
+        deleteall = findViewById(R.id.buttonDeleteAll);
+        deletebydni = findViewById(R.id.buttonDeleteByDNI);
 
         sqLiteDatabase = new DbHelper(this);
 
@@ -61,19 +65,35 @@ public class MainActivity2 extends AppCompatActivity {
 
                 Boolean checkInsertData = sqLiteDatabase.insertData(dnitxt, nametxt, surnametxt, edadtxt, directxt);
                 if(checkInsertData == true){
-                    Toast.makeText(MainActivity2.this, "New Entry Inserted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity2.this, "Objeto creado", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MainActivity2.this, "Error al crear el objeto", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        deletebydni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String dnitxt = dni.getText().toString();
+                //sqLiteDatabase.deleteAllData();
+                Boolean checkDeleteData = sqLiteDatabase.deleteData(dnitxt);
+                if(checkDeleteData == true){
+                    Toast.makeText(MainActivity2.this, "Campo con dni = " + dnitxt + " eliminado", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(MainActivity2.this, "New Entry Not Inserted", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        delete.setOnClickListener(new View.OnClickListener() {
+        deleteall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sqLiteDatabase.deleteAllData();
+                Alert();
+                //sqLiteDatabase.deleteAllData();
             }
         });
+
 
 /*
         SQLiteDatabase db = sqLiteDatabase.getWritableDatabase();
@@ -90,5 +110,36 @@ public class MainActivity2 extends AppCompatActivity {
 */
     }
 
+    private void Alert(){
+        AlertDialog alerta;
+
+        alerta = new AlertDialog.Builder(this).create();
+
+        alerta.setTitle("Mensaje de Confirmación");
+        alerta.setMessage("¿Estás seguro de que quieres eliminar toda la tabla?");
+
+        alerta.setButton(Dialog.BUTTON_NEGATIVE,"CANCELAR",new DialogInterface.OnClickListener(){
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //finish();
+            }
+        });
+        alerta.setButton(Dialog.BUTTON_POSITIVE,"ELIMINAR",new DialogInterface.OnClickListener(){
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Integer checkDeleteAllData = sqLiteDatabase.deleteAllData();;
+                if(checkDeleteAllData == 0){
+                    Toast.makeText(MainActivity2.this, "Tabla Eliminada", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MainActivity2.this, "Error al eliminar", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alerta.show();
+    }
 
 }

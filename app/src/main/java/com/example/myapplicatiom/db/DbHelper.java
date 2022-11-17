@@ -103,17 +103,17 @@ public class DbHelper extends SQLiteOpenHelper{
     }
 
     //Delete data by name
-    /*public boolean deleteData(String name) {
+    public boolean deleteData(String dni) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        long result = sqLiteDatabase.delete(DATABASE_NAME, database.FeedEntry.TABLE_NAME + " = ?", new String[]{name});
+        long result = sqLiteDatabase.delete(database.FeedEntry.TABLE_NAME, database.FeedEntry.COLUMN_NAME_DNI + " = ?", new String[]{dni});
         sqLiteDatabase.close();
         if (result > 0) {
             return true;
         } else {
             return false;
         }
-    }*/
+    }
 
     public Integer deleteAllData(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
