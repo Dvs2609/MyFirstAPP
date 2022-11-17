@@ -78,6 +78,29 @@ public class DbHelper extends SQLiteOpenHelper{
         return cursor;
 
     }
+    //get all data
+    public Cursor SortByAgeDESC() {
+
+        String sortAge = "SELECT * FROM " +  database.FeedEntry.TABLE_NAME + " ORDER BY " + database.FeedEntry.COLUMN_NAME_EDAD + " DESC ";
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(sortAge, null);
+
+        return cursor;
+
+    }
+
+    //get all data
+    public Cursor SortByAgeASC() {
+
+        String sortAge = "SELECT * FROM " +  database.FeedEntry.TABLE_NAME + " ORDER BY " + database.FeedEntry.COLUMN_NAME_EDAD + " ASC ";
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(sortAge, null);
+
+        return cursor;
+
+    }
 
     //Delete data by name
     /*public boolean deleteData(String name) {

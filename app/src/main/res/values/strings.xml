@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">My Applicatiom</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">SQLite</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -13,6 +12,6 @@
     <string name="second_fragment_num">0</string>
     <string name="imageLayout">Image</string>
     <string name="recyclerview">WebView</string>
-    <string name="ButtonBranchActivity">WebView</string>
+    <string name="ButtonBranchActivity">SQLite</string>
 
 </resources>
