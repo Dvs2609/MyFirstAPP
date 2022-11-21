@@ -1,145 +1,105 @@
 package com.example.myapplicatiom;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplicatiom.db.DbHelper;
-import com.example.myapplicatiom.db.database;
-import com.example.myapplicatiom.rv.DataList;
+import com.example.myapplicatiom.rf.APIservice;
+import com.example.myapplicatiom.rf.APIutils;
+import com.example.myapplicatiom.rf.RetrofitClass;
+import com.example.myapplicatiom.rv.RecyclerViewAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity2 extends AppCompatActivity {
 
-    EditText dni, name,surname,edad , direc;
-    Button insert, show, deleteall, deletebydni;
-    DbHelper sqLiteDatabase;
+    RecyclerView recyclerView;
+    LinearLayoutManager layoutManager;
+    RecyclerViewAdapter adapter;
+    TextView name;
 
+    private APIservice mService;
+    List<Character> listaPersona = new ArrayList<>();
+    private static final String BASE_URL = "https://breakingbadapi.com/api/characters?limit=5";
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
         getSupportActionBar().hide();
 
-        dni = findViewById(R.id.newdni);
-        name = findViewById(R.id.newname);
-        surname = findViewById(R.id.newsurname);
-        edad = findViewById(R.id.newedad);
-        direc = findViewById(R.id.newdirec);
-        insert = findViewById(R.id.buttonNew);
-        show = findViewById(R.id.buttonShow);
-        deleteall = findViewById(R.id.buttonDeleteAll);
-        deletebydni = findViewById(R.id.buttonDeleteByDNI);
+        recyclerView = findViewById(R.id.RecyclerView);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
-        sqLiteDatabase = new DbHelper(this);
 
-        show.setOnClickListener(new View.OnClickListener() {
+        APIservice apiservice = RetrofitClass.getClient().create(APIservice.class);
+
+        Call<List<Character>> call = apiservice.getCharacterLimit5();
+        call.enqueue(new Callback<List<Character>>() {
             @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity2.this, DataList.class));
-            }
-        });
+            public void onResponse(Call<List<Character>> call, Response<List<Character>> response) {
+                //List<Character> characters = response.body().getListcharacter();
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
 
-        insert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String dnitxt = dni.getText().toString();
-                String nametxt = name.getText().toString();
-                String surnametxt = surname.getText().toString();
-                String edadtxt = edad.getText().toString();
-                String directxt = direc.getText().toString();
-
-                Boolean checkInsertData = sqLiteDatabase.insertData(dnitxt, nametxt, surnametxt, edadtxt, directxt);
-                if(checkInsertData == true){
-                    Toast.makeText(MainActivity2.this, "Objeto creado", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(MainActivity2.this, "Error al crear el objeto", Toast.LENGTH_SHORT).show();
+                    listaPersona = response.body();
+                    //listaPersona.addAll(response.body());
                 }
-            }
-        });
+                adapter = new RecyclerViewAdapter(getApplicationContext(), listaPersona);
+                recyclerView.setAdapter(adapter);
 
-        deletebydni.setOnClickListener(new View.OnClickListener() {
+            }
             @Override
-            public void onClick(View view) {
-
-                String dnitxt = dni.getText().toString();
-                //sqLiteDatabase.deleteAllData();
-                Boolean checkDeleteData = sqLiteDatabase.deleteData(dnitxt);
-                if(checkDeleteData == true){
-                    Toast.makeText(MainActivity2.this, "Campo con dni = " + dnitxt + " eliminado", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(MainActivity2.this, "New Entry Not Inserted", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        deleteall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Alert();
-                //sqLiteDatabase.deleteAllData();
+            public void onFailure(Call<List<Character>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
             }
         });
 
 
-/*
-        SQLiteDatabase db = sqLiteDatabase.getWritableDatabase();
 
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(database.FeedEntry.COLUMN_NAME_DNI, "dni");
-        values.put(database.FeedEntry.COLUMN_NAME_NOMBRE, "nombre");
-        values.put(database.FeedEntry.COLUMN_NAME_APELLIDO, "apellido");
-        values.put(database.FeedEntry.COLUMN_NAME_EDAD, "edad");
-        values.put(database.FeedEntry.COLUMN_NAME_DIRECCION, "dirección");
-        //Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(database.FeedEntry.TABLE_NAME, null, values);
-*/
+        //loadAnswers();
+
     }
 
-    private void Alert(){
-        AlertDialog alerta;
 
-        alerta = new AlertDialog.Builder(this).create();
 
-        alerta.setTitle("Mensaje de Confirmación");
-        alerta.setMessage("¿Estás seguro de que quieres eliminar toda la tabla?");
-
-        alerta.setButton(Dialog.BUTTON_NEGATIVE,"CANCELAR",new DialogInterface.OnClickListener(){
-
+    /*private void loadAnswers() {
+        APIservice.getAnswers().enqueue(new Callback<List<Character>>() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //finish();
-            }
-        });
-        alerta.setButton(Dialog.BUTTON_POSITIVE,"ELIMINAR",new DialogInterface.OnClickListener(){
+            public void onResponse(Call<List<Character>> call, Response<List<Character>> response) {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+                List<Character> posts = response.body();
+                name = findViewById(R.id.TVidShow);
 
-                Integer checkDeleteAllData = sqLiteDatabase.deleteAllData();;
-                if(checkDeleteAllData == 0){
-                    Toast.makeText(MainActivity2.this, "Tabla Eliminada", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(MainActivity2.this, "Error al eliminar", Toast.LENGTH_SHORT).show();
+                for (Character post : posts){
+                    String nombre = post.getName();
+                    name.append(nombre);
                 }
-            }
-        });
 
-        alerta.show();
-    }
+            }
+
+            @Override
+            public void onFailure(Call<List<Character>> call, Throwable t) {
+
+            }
+
+
+        });
+    }*/
 
 }
