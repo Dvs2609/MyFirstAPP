@@ -1,22 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingRight="10dp"
-    android:paddingLeft="10dp"
-    android:orientation="vertical"
     android:background="@color/screenBackground"
     tools:context=".MainActivity2">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerView"
-        app:layout_constraintBottom_toTopOf="parent"
+    <EditText
+        android:id="@+id/Nombre_shared"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Nombre"
+        android:hint="Nombre"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintVertical_bias="0.16" />
+
+
+    <EditText
+        android:id="@+id/Apellido_Shared"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Apellido"
+        android:hint="Apellido"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintVertical_bias="0.235" />
+
+    <Button
+        android:id="@+id/button_Shared"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guardar datos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Apellido_Shared"
+        app:layout_constraintVertical_bias="0.141" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
