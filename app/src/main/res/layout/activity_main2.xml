@@ -8,12 +8,12 @@
     tools:context=".MainActivity2">
 
     <EditText
-        android:id="@+id/Nombre_shared"
+        android:id="@+id/email_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
-        android:text="Nombre"
-        android:hint="Nombre"
+        android:text=""
+        android:hint="Email"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -28,12 +28,12 @@
 
 
     <EditText
-        android:id="@+id/Apellido_Shared"
+        android:id="@+id/password_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
-        android:text="Apellido"
-        android:hint="Apellido"
+        android:text=""
+        android:hint="pass"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -45,17 +45,52 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         app:layout_constraintVertical_bias="0.235" />
-
     <Button
-        android:id="@+id/button_Shared"
+        android:id="@+id/btLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Guardar datos"
+        android:text="Iniciar Sesión"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Apellido_Shared"
+        app:layout_constraintTop_toBottomOf="@+id/password_log"
         app:layout_constraintVertical_bias="0.141" />
+    <Button
+        android:id="@+id/btCreateUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear Usuario"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btLogin"
+        app:layout_constraintVertical_bias="0.1" />
+    <Button
+        android:id="@+id/btnGoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        app:drawableLeftCompat="@drawable/ic_google"
+        android:drawablePadding="10dp"
+        android:paddingLeft="20dp"
+        android:text="Inicio de Sesión"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btCreateUser"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <EditText
+        android:id="@+id/tokenId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btCreateUser"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

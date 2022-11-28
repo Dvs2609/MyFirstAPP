@@ -12,6 +12,8 @@
     <string name="second_fragment_num">0</string>
     <string name="imageLayout">Image</string>
     <string name="recyclerview">WebView</string>
-    <string name="ButtonBranchActivity">SQLite</string>
+    <string name="ButtonBranchActivity">Firebase Auth</string>
+    <string name="default_web_client_id2" translatable="false">955215302990-mrq3io9aj5gabktr6jjmc8av8dmmgaqr.apps.googleusercontent.com</string>
+
 
 </resources>
