@@ -48,6 +48,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.firebase:firebase-inappmessaging-display:20.2.0'
+    implementation 'com.google.firebase:firebase-storage:20.1.0'
 
 
     testImplementation 'junit:junit:4.13.2'

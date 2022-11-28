@@ -3,7 +3,9 @@ package com.example.myapplicatiom;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,22 +19,36 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.UUID;
 
 public class UserProfile extends AppCompatActivity {
 
     FirebaseAuth mAuth;
+    FirebaseStorage storage;
+    StorageReference storageReference;
     GoogleSignInClient mGoogleSignInClient;
     GoogleSignInOptions gso;
     TextView txtId, txtName, txtEmail;
     ImageView imageUser;
+    public Uri imageUri;
     Button logOut, deleteUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +64,8 @@ public class UserProfile extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         txtId.setText(currentUser.getUid());
         txtName.setText(currentUser.getDisplayName());
@@ -125,7 +143,98 @@ public class UserProfile extends AppCompatActivity {
                 }
             }
         });
+
+        imageUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ChoosePicture();
+
+            }
+        });
     }
+    private void getDownloadUrl(StorageReference reference){
+        reference.getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("UserProfile", "onSuccess: " + uri);
+                        UploadUser(imageUri);
+                    }
+                });
+    }
+    private void UploadUser(Uri uri) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(uri)
+                .build();
+        user.updateProfile(request)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(UserProfile.this, "Usuario actualizado", Toast.LENGTH_SHORT ).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UserProfile.this, "Usuario NO actualizado", Toast.LENGTH_SHORT ).show();
+
+                    }
+                });
+    }
+
+    private void ChoosePicture() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Resultado devuelto al iniciar el Intent de GoogleSignInApi.getSignInIntent (...);
+        // Result returned from Launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == 1 && resultCode == RESULT_OK && data!=null && data.getData() != null) {
+            imageUri = data.getData();
+            imageUser.setImageURI(imageUri);
+            uploadPicture();
+        }
+    }
+
+    private void uploadPicture() {
+
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setTitle("Uploading Image...");
+        pd.show();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference reference = storageReference.child("images/" + uid);
+
+        reference.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            pd.dismiss();
+                            Snackbar.make(findViewById(android.R.id.content),"Image Uploaded", Snackbar.LENGTH_LONG).show();
+                            getDownloadUrl(reference);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(getApplicationContext(), "Failed to upload", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                            double progressPercent = (100.00 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            pd.setMessage("Percentage: " + (int) progressPercent + "%");
+                        }
+                    });
+
+    }
+
 
     private void deleteUser(String uid) {
 
@@ -139,20 +248,7 @@ public class UserProfile extends AppCompatActivity {
           //  user.reauthenticate(credential)
             //        .addOnCompleteListener(new OnCompleteListener<Void>() {
               //          @Override
-                //        public void onComplete(@NonNull Task<Void> task) {
-                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Log.d("UserProfile", "User account deleted.");
-                                        Intent intent = new Intent(UserProfile.this, MainActivity2.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        Toast.makeText(UserProfile.this, "Deleted User Successfully,", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
+                //        pubº
                        // }
                   //  });
             // [END reauthenticate]
