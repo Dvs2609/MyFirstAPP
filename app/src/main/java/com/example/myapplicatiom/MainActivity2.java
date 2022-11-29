@@ -33,17 +33,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
 
 public class MainActivity2 extends AppCompatActivity {
 
     EditText emailid, passid, tokenid;
-    FirebaseAuth mAuth;
-    GoogleSignInClient mGoogleSignInClient;
-    FirebaseAuth.AuthStateListener mAuthStateListener;
-    FirebaseAnalytics mAnalytics;
-    String TAG = "login";
-    //private ActivityMainBinding binding;
-    //ActivityMain2Binding bindView;
+
+    private ActivityMainBinding binding;
+    ActivityMain2Binding bindView;
+    private static final String FILE_NAME = "texto.txt";
+
     Button ButtonLogin, ButtonCreateUser, btnGoogle;
 
     int RC_SIGN_IN = 1;
@@ -53,200 +57,80 @@ public class MainActivity2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        //setContentView(R.layout.activity_main2);
         getSupportActionBar().hide();
 
-        /*binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot()); //(R.layout.avtiivity_main);*/
+        bindView = ActivityMain2Binding.inflate(getLayoutInflater());
+        setContentView(bindView.getRoot()); //(R.layout.avtiivity_main);
 
-
-        emailid = findViewById(R.id.email_log);
-        passid = findViewById(R.id.password_log);
-        ButtonCreateUser = findViewById(R.id.btCreateUser);
-        ButtonLogin = findViewById(R.id.btLogin);
-        tokenid = findViewById(R.id.tokenId);
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id2))
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
-        mAuth = FirebaseAuth.getInstance();
-        mAnalytics = FirebaseAnalytics.getInstance(this);
-
-        btnGoogle = findViewById(R.id.btnGoogle);
-        btnGoogle.setOnClickListener(new View.OnClickListener() {
+        bindView.btSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GoogleSignIn();
+                saveFile();
             }
         });
-
-        ButtonCreateUser.setOnClickListener(new View.OnClickListener() {
+        bindView.btRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = emailid.getText().toString();
-                String pass = passid.getText().toString();
-                createAccount(email,pass);
+                readFile();
             }
         });
-        ButtonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = emailid.getText().toString();
-                String pass = passid.getText().toString();
-                signIn(email,pass);
-            }
-        });
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-
-                        // Log and toast
-                        System.out.println(token);
-                        Toast.makeText(MainActivity2.this,"token: " + token, Toast.LENGTH_SHORT).show();
-
-                        tokenid.setText(token);
-                    }
-                });
-
-
-
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //Resultado devuelto al iniciar el Intent de GoogleSignInApi.getSignInIntent (...);
-        // Result returned from Launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            if (task.isSuccessful()) {
 
+    private void saveFile(){
+        String textToSave = bindView.etFichero.getText().toString();
+        //Clase que nos permite escribir un fichero como flujo de bytes
+        FileOutputStream fileOutputStream = null;
+
+        try {
+            fileOutputStream = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            fileOutputStream.write(textToSave.getBytes());
+            Log.d("TAG1", "Fichero salvado en: " + getFilesDir() + "/" + FILE_NAME);
+            fileOutputStream.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(fileOutputStream != null){
                 try {
-                    // Google Sign In was successful, authenticate with Firebase
-                    GoogleSignInAccount account = task.getResult(ApiException.class);
-                    Log.d(TAG, "“firebaseAuthWithGoogle:" + account.getId());
-                    firebaseAuthWithGoogle(account.getIdToken());
-
-                } catch (ApiException e) {
-                    // Google Sign In fallido, actualizar GUI
-                    Log.w(TAG, "Google sign in failed", e);
-
+                    fileOutputStream.close();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }else{
-                    Log.d(TAG, "Error, login no exitoso:" + task.getException().toString());
-                    Toast.makeText(this, "Ocurrio un error. " + task.getException().toString(),
-                            Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    private void readFile(){
+        //Leer fichero con flujo de bytes
+        FileInputStream fileInputStream = null;
+        BufferedReader bufferedReader = null;
+        try {
+            fileInputStream = openFileInput(FILE_NAME);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
 
+            bufferedReader = new BufferedReader(inputStreamReader); //lee linea a linea
+            String lineaTexto;
+            StringBuilder stringBuilder = new StringBuilder();
+            lineaTexto = bufferedReader.readLine();
+            while(lineaTexto != null){
+                stringBuilder.append(lineaTexto + "\n");
+                lineaTexto = bufferedReader.readLine();
+            }
+
+            bindView.etFichero.setText(stringBuilder);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if (fileInputStream != null) {
+                    fileInputStream.close();
                 }
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            //currentUser.reload();
-            Intent userActivity = new Intent(MainActivity2.this, UserProfile.class);
-            startActivity(userActivity);
-        }
-        super.onStart();
-    }
-
-    private void createAccount(String email, String password) {
-        // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity2.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-                    }
-                });
-        // [END create_user_with_email]
-    }
-    private void signIn(String email, String password) {
-        // [START sign_in_with_email]
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-
-                            Intent userActivity = new Intent(MainActivity2.this, UserProfile.class);
-                            startActivity(userActivity);
-                            MainActivity2.this.finish();
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity2.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-                    }
-                });
-        // [END sign_in_with_email]
-    }
-
-    private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            Intent userActivity = new Intent(MainActivity2.this, UserProfile.class);
-                            startActivity(userActivity);
-                            MainActivity2.this.finish();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity2.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-                    }
-                });
-        // [END sign_in_with_email]
-    }
-    private void GoogleSignIn(){
-        Intent gsiIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(gsiIntent, RC_SIGN_IN);
-    }
-
-    private void reload() { }
-
-    private void updateUI(FirebaseUser user) {
-
-    }
 }
