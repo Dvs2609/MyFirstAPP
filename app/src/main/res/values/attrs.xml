@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="setImageDrawable" format="reference" />
+    <attr name="setTitle" format="string" />
+    <attr name="setSubTitle" format="string" />
+
+    <declare-styleable name="CustomView">
+        <attr name="setImageDrawable"  />
+        <attr name="setTitle"  />
+        <attr name="setSubTitle" />
+    </declare-styleable>
+</resources>

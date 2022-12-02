@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llMain"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="VALIDATE"
+        android:textSize="16dp"
+        android:visibility="visible"
+        android:textColor="@android:color/background_dark"
+        android:layout_marginBottom="9dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_dark">
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:textColorHint="@android:color/holo_red_dark"
+            android:textSize="16sp"
+            android:inputType="textCapSentences"
+            android:background="@null"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_visibility_password"/>
+
+        <ImageView
+            android:id="@+id/iv_visibility_password"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/atosimage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/et_input"
+            app:layout_constraintBottom_toBottomOf="@id/et_input"
+            android:layout_marginEnd="10dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ERROR MESSAGE"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="12dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"/>
+
+</LinearLayout>
